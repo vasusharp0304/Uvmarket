@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <rect width="200" height="200" rx="16" fill="#0a0a0a"/>
+  <!-- Candlesticks -->
+  <rect x="55" y="80" width="12" height="50" rx="2" fill="#22c55e"/>
+  <rect x="59" y="70" width="4" height="70" fill="#22c55e"/>
+  <rect x="75" y="60" width="12" height="60" rx="2" fill="#ef4444"/>
+  <rect x="79" y="50" width="4" height="80" fill="#ef4444"/>
+  <rect x="95" y="55" width="12" height="45" rx="2" fill="#22c55e"/>
+  <rect x="99" y="45" width="4" height="65" fill="#22c55e"/>
+  <rect x="115" y="70" width="12" height="40" rx="2" fill="#ef4444"/>
+  <rect x="119" y="60" width="4" height="60" fill="#ef4444"/>
+  <rect x="135" y="50" width="12" height="55" rx="2" fill="#22c55e"/>
+  <rect x="139" y="40" width="4" height="75" fill="#22c55e"/>
+  <!-- Graduation Cap -->
+  <polygon points="100,25 50,50 100,65 150,50" fill="#a855f7"/>
+  <polygon points="100,65 50,50 50,58 100,73 150,58 150,50" fill="#7c3aed"/>
+  <line x1="150" y1="50" x2="150" y2="75" stroke="#fbbf24" stroke-width="2"/>
+  <circle cx="150" cy="78" r="4" fill="#fbbf24"/>
+  <!-- Brand Text -->
+  <text x="100" y="155" text-anchor="middle" fill="white" font-family="Arial, sans-serif" font-weight="bold" font-size="16">UV MARKET</text>
+  <text x="100" y="173" text-anchor="middle" fill="white" font-family="Arial, sans-serif" font-weight="bold" font-size="16">SCHOOL</text>
+  <text x="100" y="192" text-anchor="middle" fill="#a855f7" font-family="Arial, sans-serif" font-size="8">Learn. Trade. Succeed.</text>
+</svg>

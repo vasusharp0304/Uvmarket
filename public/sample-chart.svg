@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400" width="800" height="400">
+  <rect width="800" height="400" fill="#f8fafc"/>
+  <rect x="50" y="50" width="700" height="300" fill="white" stroke="#e2e8f0" stroke-width="2"/>
+  
+  <!-- Grid lines -->
+  <line x1="50" y1="125" x2="750" y2="125" stroke="#f1f5f9" stroke-width="1"/>
+  <line x1="50" y1="200" x2="750" y2="200" stroke="#f1f5f9" stroke-width="1"/>
+  <line x1="50" y1="275" x2="750" y2="275" stroke="#f1f5f9" stroke-width="1"/>
+  
+  <line x1="225" y1="50" x2="225" y2="350" stroke="#f1f5f9" stroke-width="1"/>
+  <line x1="400" y1="50" x2="400" y2="350" stroke="#f1f5f9" stroke-width="1"/>
+  <line x1="575" y1="50" x2="575" y2="350" stroke="#f1f5f9" stroke-width="1"/>
+
+  <!-- Candlesticks (Sample Pattern) -->
+  <!-- Green Candle -->
+  <line x1="100" y1="280" x2="100" y2="220" stroke="#22c55e" stroke-width="2"/>
+  <rect x="92" y="260" width="16" height="30" fill="#22c55e"/>
+  
+  <!-- Red Candle -->
+  <line x1="150" y1="230" x2="150" y2="290" stroke="#ef4444" stroke-width="2"/>
+  <rect x="142" y="240" width="16" height="40" fill="#ef4444"/>
+  
+  <!-- Green Candle Big -->
+  <line x1="200" y1="280" x2="200" y2="150" stroke="#22c55e" stroke-width="2"/>
+  <rect x="192" y="250" width="16" height="80" fill="#22c55e"/>
+
+  <!-- Red Candle Small -->
+  <line x1="250" y1="160" x2="250" y2="190" stroke="#ef4444" stroke-width="2"/>
+  <rect x="242" y="165" width="16" height="15" fill="#ef4444"/>
+  
+  <!-- Green Candle Breakout -->
+  <line x1="300" y1="180" x2="300" y2="100" stroke="#22c55e" stroke-width="2"/>
+  <rect x="292" y="170" width="16" height="60" fill="#22c55e"/>
+
+  <!-- Trend Line -->
+  <path d="M 80 270 Q 200 240 300 110" stroke="#3b82f6" stroke-width="2" fill="none" stroke-dasharray="5,5"/>
+  
+  <!-- Text -->
+  <text x="400" y="200" font-family="sans-serif" font-size="24" fill="#94a3b8" text-anchor="middle" opacity="0.5">SAMPLE CHART ANALYSIS</text>
+  <text x="400" y="230" font-family="sans-serif" font-size="14" fill="#cbd5e1" text-anchor="middle">UV Market Signal</text>
+</svg>

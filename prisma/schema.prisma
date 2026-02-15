@@ -1,0 +1,200 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+// ─── Users ───────────────────────────────────────────────
+model User {
+  id                    String    @id @default(cuid())
+  name                  String
+  email                 String    @unique
+  phone                 String?
+  passwordHash          String
+  role                  String    @default("CUSTOMER") // ADMIN | CUSTOMER
+  isActive              Boolean   @default(true)
+  emailVerified         Boolean   @default(false)
+  emailVerifyToken      String?
+  resetToken            String?
+  resetTokenExpiry      DateTime?
+  subscriptionStatus    String    @default("inactive") // active | inactive | expired
+  subscriptionExpiresAt DateTime?
+  referralCode          String?   @unique
+  referredBy            String?
+  capitalAmount         Float     @default(0)
+  photoUrl              String?   // User profile picture
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+
+  signals        Signal[]
+  payments       Payment[]
+  invoices       Invoice[]
+  notifications  Notification[]
+  activityLogs   ActivityLog[]
+  chatMessages   ChatMessage[]
+  referrals      Referral[]     @relation("ReferrerRelation")
+  referredUsers  Referral[]     @relation("ReferredRelation")
+}
+
+// ─── Signals / Recommendations ───────────────────────────
+model Signal {
+  id                   String   @id @default(cuid())
+  createdById          String
+  createdBy            User     @relation(fields: [createdById], references: [id])
+  symbol               String
+  companyName          String
+  segment              String   @default("Equity") // Equity | F&O | Commodity
+  signalType           String   @default("Swing") // Intraday | Swing | Positional
+  direction            String   // BUY | SELL
+  entryPrice           Float
+  targetPrice          Float
+  stopLossPrice        Float
+  status               String   @default("ACTIVE") // PENDING | ACTIVE | TARGET_HIT | STOP_LOSS | CLOSED_MANUAL
+  entryDateTime        DateTime @default(now())
+  exitPrice            Float?
+  exitDateTime         DateTime?
+  returnPercent        Float?
+  notes                String?
+  isVisibleToCustomers Boolean  @default(true)
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+
+  screenshots SignalScreenshot[]
+}
+
+model SignalScreenshot {
+  id        String   @id @default(cuid())
+  signalId  String
+  signal    Signal   @relation(fields: [signalId], references: [id], onDelete: Cascade)
+  imageUrl  String
+  caption   String?
+  createdAt DateTime @default(now())
+}
+
+// ─── Subscription Plans ──────────────────────────────────
+model SubscriptionPlan {
+  id          String   @id @default(cuid())
+  name        String   // Monthly | Quarterly | Yearly
+  description String?
+  price       Float
+  duration    Int      // Duration in days
+  isActive    Boolean  @default(true)
+  features    String?  // JSON array of feature strings
+  sortOrder   Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+// ─── Payments ────────────────────────────────────────────
+model Payment {
+  id                String   @id @default(cuid())
+  userId            String
+  user              User     @relation(fields: [userId], references: [id])
+  planName          String   // Monthly | Quarterly | Yearly
+  amount            Float
+  currency          String   @default("INR")
+  razorpayOrderId   String?
+  razorpayPaymentId String?
+  razorpaySignature String?
+  paymentMethod     String?  // UPI | Card | NetBanking
+  status            String   @default("created") // created | paid | failed | refunded
+  validFrom         DateTime?
+  validTo           DateTime?
+  createdAt         DateTime @default(now())
+
+  invoice Invoice?
+}
+
+// ─── Invoices ────────────────────────────────────────────
+model Invoice {
+  id              String   @id @default(cuid())
+  invoiceNumber   String   @unique
+  userId          String
+  user            User     @relation(fields: [userId], references: [id])
+  paymentId       String   @unique
+  payment         Payment  @relation(fields: [paymentId], references: [id])
+  subtotal        Float
+  gstPercent      Float    @default(18)
+  gstAmount       Float
+  totalAmount     Float
+  customerName    String
+  customerEmail   String
+  customerPhone   String?
+  customerGST     String?
+  companyName     String   @default("UV Market School")
+  companyAddress  String?
+  companyGST      String?
+  companyPAN      String?
+  disclaimer      String?
+  pdfUrl          String?
+  createdAt       DateTime @default(now())
+}
+
+// ─── Notifications ───────────────────────────────────────
+model Notification {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  title     String
+  message   String
+  type      String   @default("info") // info | signal | payment | system
+  isRead    Boolean  @default(false)
+  link      String?
+  createdAt DateTime @default(now())
+}
+
+// ─── Activity Logs ───────────────────────────────────────
+model ActivityLog {
+  id        String   @id @default(cuid())
+  userId    String?
+  user      User?    @relation(fields: [userId], references: [id])
+  action    String   // LOGIN | LOGOUT | SIGNAL_VIEW | PAYMENT | SUBSCRIPTION
+  details   String?
+  ipAddress String?
+  userAgent String?
+  createdAt DateTime @default(now())
+}
+
+// ─── Chat / Chatbot ──────────────────────────────────────
+model ChatMessage {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  message   String
+  sender    String   @default("user") // user | bot | admin
+  createdAt DateTime @default(now())
+}
+
+// ─── Referral System ─────────────────────────────────────
+model Referral {
+  id           String   @id @default(cuid())
+  referrerId   String
+  referrer     User     @relation("ReferrerRelation", fields: [referrerId], references: [id])
+  referredId   String
+  referred     User     @relation("ReferredRelation", fields: [referredId], references: [id])
+  status       String   @default("pending") // pending | completed | rewarded
+  rewardAmount Float?
+  createdAt    DateTime @default(now())
+}
+
+// ─── App Settings (Branding, GST, Company) ───────────────
+model AppSettings {
+  id           String  @id @default("default")
+  appName      String  @default("UV Market School")
+  tagline      String  @default("Professional Trading Signals")
+  logoUrl      String?
+  primaryColor String  @default("#7c3aed")
+  companyName  String  @default("UV Market School")
+  companyAddress String?
+  companyGST   String?
+  companyPAN   String?
+  companyEmail String?
+  companyPhone String?
+  gstPercent   Float   @default(18)
+  termsUrl     String?
+  privacyUrl   String?
+  updatedAt    DateTime @updatedAt
+}

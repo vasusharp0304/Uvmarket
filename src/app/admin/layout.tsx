@@ -7,7 +7,7 @@ import Link from 'next/link';
 import { LoadingSpinner } from '@/components/Loading';
 import {
     LayoutDashboard, TrendingUp, Users, CreditCard, Package, Settings,
-    FileText, Shield, Activity, ChevronRight, HelpCircle
+    FileText, Shield, Activity, ChevronRight, HelpCircle, MessageCircle
 } from 'lucide-react';
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
@@ -33,6 +33,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         { href: '/admin', label: 'Dashboard', icon: LayoutDashboard, exact: true, color: 'from-purple-500 to-indigo-600', bgActive: 'bg-purple-50', textActive: 'text-purple-700' },
         { href: '/admin/signals', label: 'Signals', icon: TrendingUp, color: 'from-green-500 to-emerald-600', bgActive: 'bg-green-50', textActive: 'text-green-700' },
         { href: '/admin/customers', label: 'Customers', icon: Users, color: 'from-blue-500 to-cyan-600', bgActive: 'bg-blue-50', textActive: 'text-blue-700' },
+        { href: '/admin/chats', label: 'Chats', icon: MessageCircle, color: 'from-violet-500 to-purple-600', bgActive: 'bg-violet-50', textActive: 'text-violet-700' },
         { href: '/admin/payments', label: 'Payments', icon: CreditCard, color: 'from-amber-500 to-orange-600', bgActive: 'bg-amber-50', textActive: 'text-amber-700' },
         { href: '/admin/plans', label: 'Plans', icon: Package, color: 'from-pink-500 to-rose-600', bgActive: 'bg-pink-50', textActive: 'text-pink-700' },
         { href: '/admin/invoices', label: 'Invoices', icon: FileText, color: 'from-teal-500 to-cyan-600', bgActive: 'bg-teal-50', textActive: 'text-teal-700' },

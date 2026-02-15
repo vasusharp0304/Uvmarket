@@ -161,12 +161,14 @@ model ActivityLog {
 
 // ─── Chat / Chatbot ──────────────────────────────────────
 model ChatMessage {
-  id        String   @id @default(cuid())
-  userId    String
-  user      User     @relation(fields: [userId], references: [id])
-  message   String
-  sender    String   @default("user") // user | bot | admin
-  createdAt DateTime @default(now())
+  id                String   @id @default(cuid())
+  userId            String
+  user              User     @relation(fields: [userId], references: [id])
+  message           String
+  sender            String   @default("user") // user | bot | admin
+  needsAdminReview  Boolean  @default(false)
+  adminReplied      Boolean  @default(false)
+  createdAt         DateTime @default(now())
 }
 
 // ─── Referral System ─────────────────────────────────────

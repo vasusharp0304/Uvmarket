@@ -1,6 +1,1 @@
-module.exports = {
-  staticPageGenerationTimeout: 60,
-  experimental: {
-    appDir: true,
-  },
-};
+module.exports = { staticPageGenerationTimeout: 60, };

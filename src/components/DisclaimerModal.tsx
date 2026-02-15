@@ -6,23 +6,31 @@ import { AlertTriangle, Shield, BookOpen, Scale, TrendingDown, UserCheck } from 
 export default function DisclaimerModal() {
     const [isOpen, setIsOpen] = useState(false);
     const [accepted, setAccepted] = useState(false);
+    const [mounted, setMounted] = useState(false);
 
     useEffect(() => {
+        setMounted(true);
         // Check local storage on mount
         const hasAccepted = localStorage.getItem('disclaimer_accepted');
         if (!hasAccepted) {
-            setIsOpen(true);
-            document.body.style.overflow = 'hidden'; // Prevent scroll
+            // Use setTimeout to avoid setState in effect warning
+            setTimeout(() => {
+                setIsOpen(true);
+                document.body.style.overflow = 'hidden';
+            }, 0);
         }
+        return () => {
+            document.body.style.overflow = 'auto';
+        };
     }, []);
 
     const handleAccept = () => {
         localStorage.setItem('disclaimer_accepted', 'true');
         setIsOpen(false);
-        document.body.style.overflow = 'auto'; // Restore scroll
+        document.body.style.overflow = 'auto';
     };
 
-    if (!isOpen) return null;
+    if (!mounted || !isOpen) return null;
 
     return (
         <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/80 backdrop-blur-md p-4">

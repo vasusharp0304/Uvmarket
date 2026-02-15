@@ -1,7 +1,7 @@
 'use client';
 
 import { Signal } from '@/types/dashboard';
-import { ArrowRight, TrendingUp, TrendingDown, Target, Shield, Clock, Calendar, CheckCircle, AlertCircle, Sparkles } from 'lucide-react';
+import { ArrowRight, TrendingUp, TrendingDown, Target, Shield, Clock, CheckCircle, AlertCircle, Sparkles } from 'lucide-react';
 
 interface SignalCardProps {
     signal: Signal;
@@ -10,8 +10,6 @@ interface SignalCardProps {
 
 export default function SignalCard({ signal, onClick }: SignalCardProps) {
     const isBuy = signal.direction === 'BUY';
-    const isActive = signal.status === 'ACTIVE' || signal.status === 'PENDING';
-    const isWin = signal.returnPercent && signal.returnPercent > 0;
 
     return (
         <div

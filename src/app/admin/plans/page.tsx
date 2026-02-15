@@ -143,7 +143,7 @@ export default function AdminPlansPage() {
                 <div className="py-12 text-center bg-white rounded-2xl border border-dashed border-gray-300">
                     <Package size={32} className="mx-auto mb-3 text-gray-300" />
                     <h3 className="text-gray-900 font-medium">No plans created yet</h3>
-                    <p className="text-gray-500 text-sm mt-1">Click &quot;Add Plan&quot; to create your first subscription plan.</p>
+                    <p className="text-gray-500 text-sm mt-1">Click &ldquo;Add Plan&rdquo; to create your first subscription plan.</p>
                 </div>
             )}
 

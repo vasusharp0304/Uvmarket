@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
+import { getRazorpayConfig } from '@/lib/razorpay';
 import crypto from 'crypto';
 
 export async function POST(req: NextRequest) {
@@ -14,9 +15,18 @@ export async function POST(req: NextRequest) {
         const body = await req.json();
         const { razorpay_order_id, razorpay_payment_id, razorpay_signature } = body;
 
+        const config = getRazorpayConfig();
+        if (!config.isValid || !config.keySecret) {
+            console.error('Razorpay configuration missing:', config.missing.join(', '));
+            return NextResponse.json(
+                { error: 'Payment service is not configured' },
+                { status: 503 }
+            );
+        }
+
         // Verify signature
         const expectedSignature = crypto
-            .createHmac('sha256', process.env.RAZORPAY_KEY_SECRET!)
+            .createHmac('sha256', config.keySecret)
             .update(`${razorpay_order_id}|${razorpay_payment_id}`)
             .digest('hex');
 

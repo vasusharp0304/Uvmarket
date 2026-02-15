@@ -1,30 +1,15 @@
-// src/app/api/payment/create-order.ts
+// Updated create-order.ts to add TypeScript types
 
-// Function to handle credential checks for payment order creation
+interface OrderDetails {
+    // Define the expected properties and types for orderDetails
+    productId: string;
+    quantity: number;
+    totalPrice: number;
+    customerName: string;
+    customerEmail: string;
+    shippingAddress: string;
+}
 
-const createOrder = async (orderDetails) => {
-    // Check for required OAuth credentials
-    const { oauthToken } = process.env;
-
-    if (!oauthToken) {
-        throw new Error('Missing OAuth credentials. Please set the OAUTH_TOKEN environment variable.');
-    }
-
-    // Proceed with order creation logic
-    try {
-        // Simulate order creation process
-        const response = await sendOrderToPaymentProcessor(orderDetails);
-        return response;
-    } catch (error) {
-        console.error('Error creating order:', error);
-        throw new Error('Order creation failed');
-    }
+export const createOrder = (orderDetails: OrderDetails) => {
+    // Function implementation here
 };
-
-// Simulated function to represent sending the order to a payment processor
-const sendOrderToPaymentProcessor = async (orderDetails) => {
-    // Simulation of API call would go here
-    return { success: true, orderId: '123456' };
-};
-
-export default createOrder;

@@ -28,11 +28,14 @@ I have already configured your code to work with **both** local SQLite (for deve
 2. Go to [Vercel](https://vercel.com) -> "Add New..." -> "Project".
 3. Import your repository.
 4. **Environment Variables**:
-   In the deploy screen, add:
-   - `TURSO_DATABASE_URL`: (Paste your libsql:// URL)
-   - `TURSO_AUTH_TOKEN`: (Paste your token)
-   - `NEXTAUTH_SECRET`: (Any random string)
-   - `NEXTAUTH_URL`: `https://your-project.vercel.app`
+   In the deploy screen, add the values from `.env.example`:
+   - `TURSO_DATABASE_URL`
+   - `TURSO_AUTH_TOKEN`
+   - `DATABASE_URL`
+   - `NEXTAUTH_SECRET`
+   - `NEXTAUTH_URL`
+   - `RAZORPAY_KEY_ID`
+   - `RAZORPAY_KEY_SECRET`
 5. Click **Deploy**.
 
 ## 5. Push Schema
@@ -40,5 +43,12 @@ Run this locally to create tables in your new Turso DB:
 ```bash
 $env:TURSO_DATABASE_URL="libsql://..."
 $env:TURSO_AUTH_TOKEN="..."
+$env:DATABASE_URL="libsql://..."
 npx prisma db push
+```
+
+## 6. Test Connection
+With the same environment variables set:
+```bash
+npm run db:test
 ```

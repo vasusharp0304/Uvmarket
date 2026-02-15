@@ -5,9 +5,18 @@ type RazorpayConfig = {
   isValid: boolean;
 };
 
-type RazorpayInstance = InstanceType<typeof import('razorpay').default>;
+type RazorpayConstructor = typeof import('razorpay');
+
+type RazorpayInstance = InstanceType<RazorpayConstructor>;
 
 let razorpayInstance: RazorpayInstance | null = null;
+
+const loadRazorpayConstructor = async (): Promise<RazorpayConstructor> => {
+  const razorpayModule = await import('razorpay');
+  const moduleWithDefault = razorpayModule as { default?: RazorpayConstructor };
+
+  return moduleWithDefault.default ?? (razorpayModule as RazorpayConstructor);
+};
 
 export const getRazorpayConfig = (): RazorpayConfig => {
   const keyId = process.env.RAZORPAY_KEY_ID;
@@ -38,7 +47,7 @@ export const getRazorpayClient = async () => {
   }
 
   if (!razorpayInstance) {
-    const { default: Razorpay } = await import('razorpay');
+    const Razorpay = await loadRazorpayConstructor();
     razorpayInstance = new Razorpay({
       key_id: config.keyId as string,
       key_secret: config.keySecret as string,

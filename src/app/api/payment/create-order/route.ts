@@ -2,12 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
-import Razorpay from 'razorpay';
-
-const razorpay = new Razorpay({
-    key_id: process.env.RAZORPAY_KEY_ID!,
-    key_secret: process.env.RAZORPAY_KEY_SECRET!,
-});
+import { getRazorpayClient } from '@/lib/razorpay';
 
 const PLANS: Record<string, { name: string; amount: number; months: number }> = {
     monthly: { name: 'Monthly', amount: 99900, months: 1 },
@@ -28,6 +23,15 @@ export async function POST(req: NextRequest) {
         const plan = PLANS[planId];
         if (!plan) {
             return NextResponse.json({ error: 'Invalid plan' }, { status: 400 });
+        }
+
+        const { client: razorpay, config } = await getRazorpayClient();
+        if (!razorpay || !config.isValid) {
+            console.error('Razorpay configuration missing:', config.missing.join(', '));
+            return NextResponse.json(
+                { error: 'Payment service is not configured' },
+                { status: 503 }
+            );
         }
 
         const order = await razorpay.orders.create({
@@ -62,7 +66,7 @@ export async function POST(req: NextRequest) {
             orderId: order.id,
             amount: plan.amount,
             currency: 'INR',
-            keyId: process.env.RAZORPAY_KEY_ID,
+            keyId: config.keyId,
         });
     } catch (error) {
         console.error('Error creating order:', error);

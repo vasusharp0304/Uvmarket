@@ -13,7 +13,6 @@ import AIDataAnalysis from '@/components/AIDataAnalysis';
 import { Layers, CheckCircle2, Search, Sparkles, TrendingUp, Shield, Zap, ArrowDownToLine } from 'lucide-react';
 import CustomerPerformanceChart from '@/components/dashboard/CustomerPerformanceChart';
 
-
 const TRADING_TIPS = [
     "Always respect your stop loss. The first loss is the best loss.",
     "Trend is your friend until it bends.",
@@ -45,7 +44,6 @@ export default function CustomerDashboard() {
     const [currentTip, setCurrentTip] = useState(TRADING_TIPS[0]);
     const [startDate, setStartDate] = useState('');
     const [endDate, setEndDate] = useState('');
-
 
     const fetchData = useCallback(async () => {
         try {
@@ -81,10 +79,6 @@ export default function CustomerDashboard() {
             router.push('/admin');
             return;
         }
-        if (session.user?.subscriptionStatus !== 'active') {
-            router.push('/pricing');
-            return;
-        }
         fetchData();
 
         // Randomize tip on load
@@ -94,7 +88,7 @@ export default function CustomerDashboard() {
 
     if (status === 'loading' || loading) return <LoadingSpinner />;
 
-    if (!session || session.user?.subscriptionStatus !== 'active') return null;
+    if (!session) return null;
 
     const displayedSignals = activeTab === 'active' ? activeSignals : closedSignals;
     const filteredSignals = displayedSignals.filter(s => {
@@ -116,14 +110,6 @@ export default function CustomerDashboard() {
         return true;
     });
 
-    const expiryDate = session.user?.subscriptionExpiresAt
-        ? new Date(session.user.subscriptionExpiresAt).toLocaleDateString('en-IN', {
-            day: 'numeric',
-            month: 'long',
-            year: 'numeric',
-        })
-        : 'N/A';
-
     return (
         <div className="relative pb-10" style={{ overflow: 'hidden' }}>
             {/* Decorative Background Elements */}
@@ -136,7 +122,7 @@ export default function CustomerDashboard() {
             <div className="absolute bottom-40 right-60 w-2 h-2 rounded-full bg-blue-400/20 animate-pulse" style={{ zIndex: 0, animationDelay: '2s' }} />
 
             <div className="px-6 lg:px-10 py-8 w-full">
-                {/* Header Section - Bigger */}
+                {/* Header Section - Modern Design */}
                 <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-10 gap-6">
                     <div>
                         <div className="flex items-center gap-3 mb-2">
@@ -149,7 +135,7 @@ export default function CustomerDashboard() {
                         </div>
                         <p className="text-gray-500 text-base mt-2 flex items-center gap-2 ml-[52px]">
                             <span className="w-2.5 h-2.5 rounded-full bg-green-500 animate-pulse" />
-                            Subscription active until <span className="font-semibold text-gray-700">{expiryDate}</span>
+                            Access all premium signals for free
                         </p>
                     </div>
                     {/* Search Bar */}
@@ -356,8 +342,6 @@ export default function CustomerDashboard() {
                         </div>
                     </div>
                 </div>
-
-
 
                 {/* Disclaimer Footer */}
                 <div className="mt-16 border-t border-gray-200/60 pt-8">

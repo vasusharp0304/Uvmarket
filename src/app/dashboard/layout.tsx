@@ -21,7 +21,9 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             router.push('/admin');
             return;
         }
-        setReady(true);
+        // Use setTimeout to avoid setState in render
+        const timer = setTimeout(() => setReady(true), 0);
+        return () => clearTimeout(timer);
     }, [session, status, router]);
 
     if (status === 'loading' || !ready) return <LoadingSpinner />;

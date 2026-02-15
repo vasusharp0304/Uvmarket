@@ -1,7 +1,7 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
-import { Bell, Check, X } from 'lucide-react';
+import { useState, useEffect, useRef, useCallback } from 'react';
+import { Bell, Check } from 'lucide-react';
 
 interface Notification {
     id: string;
@@ -18,11 +18,22 @@ export default function NotificationBell() {
     const [unreadCount, setUnreadCount] = useState(0);
     const dropdownRef = useRef<HTMLDivElement>(null);
 
+    const fetchNotifications = useCallback(async () => {
+        try {
+            const res = await fetch('/api/notifications?limit=10');
+            if (res.ok) {
+                const data = await res.json();
+                setNotifications(data.notifications || []);
+                setUnreadCount(data.unreadCount || 0);
+            }
+        } catch { /* empty */ }
+    }, []);
+
     useEffect(() => {
         fetchNotifications();
         const interval = setInterval(fetchNotifications, 30000); // Poll every 30s
         return () => clearInterval(interval);
-    }, []);
+    }, [fetchNotifications]);
 
     useEffect(() => {
         const handleClick = (e: MouseEvent) => {
@@ -34,17 +45,6 @@ export default function NotificationBell() {
         return () => document.removeEventListener('mousedown', handleClick);
     }, []);
 
-    const fetchNotifications = async () => {
-        try {
-            const res = await fetch('/api/notifications?limit=10');
-            if (res.ok) {
-                const data = await res.json();
-                setNotifications(data.notifications || []);
-                setUnreadCount(data.unreadCount || 0);
-            }
-        } catch { }
-    };
-
     const markAllRead = async () => {
         try {
             await fetch('/api/notifications', {
@@ -54,7 +54,7 @@ export default function NotificationBell() {
             });
             setNotifications(prev => prev.map(n => ({ ...n, isRead: true })));
             setUnreadCount(0);
-        } catch { }
+        } catch { /* empty */ }
     };
 
     const typeColors = {

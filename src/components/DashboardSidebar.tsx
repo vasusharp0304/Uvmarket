@@ -4,8 +4,8 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import {
-    LayoutDashboard, History, CreditCard, Calculator,
-    TrendingUp, Gift, BarChart3, HelpCircle, ChevronRight, ChevronLeft, UsersRound
+    LayoutDashboard, History, Calculator,
+    TrendingUp, BarChart3, HelpCircle, ChevronRight, ChevronLeft, UsersRound
 } from 'lucide-react';
 import { useState } from 'react';
 
@@ -18,8 +18,6 @@ export default function DashboardSidebar() {
         { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard, exact: true, color: 'from-purple-500 to-indigo-600', bgActive: 'bg-purple-50', textActive: 'text-purple-700' },
         { href: '/history', label: 'History', icon: History, color: 'from-blue-500 to-cyan-600', bgActive: 'bg-blue-50', textActive: 'text-blue-700' },
         { href: '/calculator', label: 'Calculator', icon: Calculator, color: 'from-green-500 to-emerald-600', bgActive: 'bg-green-50', textActive: 'text-green-700' },
-        { href: '/pricing', label: 'Pricing', icon: CreditCard, color: 'from-amber-500 to-orange-600', bgActive: 'bg-amber-50', textActive: 'text-amber-700' },
-        { href: '/referral', label: 'Referral', icon: Gift, color: 'from-pink-500 to-rose-600', bgActive: 'bg-pink-50', textActive: 'text-pink-700' },
         { href: '/dashboard/profile', label: 'Profile', icon: UsersRound, color: 'from-gray-500 to-slate-600', bgActive: 'bg-gray-50', textActive: 'text-gray-700' },
     ];
 

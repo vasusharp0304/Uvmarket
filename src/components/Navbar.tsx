@@ -3,20 +3,33 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { useSession, signOut } from 'next-auth/react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import NotificationBell from '@/components/NotificationBell';
-import { History, LayoutDashboard, CreditCard, Settings, LogOut, Menu, X, Calculator, Gift, Package, FileText, TrendingUp } from 'lucide-react';
+import { History, LayoutDashboard, LogOut, Menu, X, Calculator, Gift, Package, TrendingUp, BarChart3 } from 'lucide-react';
 
 export default function Navbar() {
     const { data: session } = useSession();
     const [mobileOpen, setMobileOpen] = useState(false);
+    const [mounted, setMounted] = useState(false);
     const isAdmin = session?.user?.role === 'ADMIN';
 
-    // Prevent scrolling when mobile menu is open
-    if (typeof window !== 'undefined') {
-        if (mobileOpen) document.body.style.overflow = 'hidden';
-        else document.body.style.overflow = 'auto';
-    }
+    useEffect(() => {
+        setMounted(true);
+    }, []);
+
+    useEffect(() => {
+        if (!mounted) return;
+        if (mobileOpen) {
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = 'auto';
+        }
+        return () => {
+            document.body.style.overflow = 'auto';
+        };
+    }, [mobileOpen, mounted]);
+
+    if (!mounted) return null;
 
     return (
         <nav className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md border-b border-slate-200 h-16">
@@ -46,8 +59,7 @@ export default function Navbar() {
                                     ) : (
                                         <>
                                             <NavLink href="/dashboard" icon={LayoutDashboard} label="Dashboard" />
-                                            <NavLink href="/history" icon={History} label="History" />
-                                            <NavLink href="/pricing" icon={CreditCard} label="Pricing" />
+                                            <NavLink href="/history" icon={BarChart3} label="History" />
                                             <NavLink href="/calculator" icon={Calculator} label="Calculator" />
                                         </>
                                     )}
@@ -115,15 +127,12 @@ export default function Navbar() {
                                             <MobileNavLink href="/admin" icon={LayoutDashboard} label="Admin Dashboard" onClick={() => setMobileOpen(false)} />
                                             <MobileNavLink href="/admin/customers" icon={Package} label="Customers" onClick={() => setMobileOpen(false)} />
                                             <MobileNavLink href="/admin/signals" icon={TrendingUp} label="Signals" onClick={() => setMobileOpen(false)} />
-                                            <MobileNavLink href="/admin/payments" icon={CreditCard} label="Payments" onClick={() => setMobileOpen(false)} />
                                         </>
                                     ) : (
                                         <>
                                             <MobileNavLink href="/dashboard" icon={LayoutDashboard} label="Dashboard" onClick={() => setMobileOpen(false)} />
                                             <MobileNavLink href="/history" icon={History} label="History" onClick={() => setMobileOpen(false)} />
-                                            <MobileNavLink href="/pricing" icon={CreditCard} label="Pricing" onClick={() => setMobileOpen(false)} />
                                             <MobileNavLink href="/calculator" icon={Calculator} label="Calculator" onClick={() => setMobileOpen(false)} />
-                                            <MobileNavLink href="/referral" icon={Gift} label="Referrals" onClick={() => setMobileOpen(false)} />
                                         </>
                                     )}
                                 </div>
@@ -154,7 +163,13 @@ export default function Navbar() {
     );
 }
 
-function NavLink({ href, icon: Icon, label }: { href: string; icon?: any; label: string }) {
+interface NavLinkProps {
+    href: string;
+    icon?: React.ComponentType<{ size?: number }>;
+    label: string;
+}
+
+function NavLink({ href, icon: Icon, label }: NavLinkProps) {
     return (
         <Link href={href} className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium text-slate-600 hover:text-indigo-600 hover:bg-slate-50 transition-all">
             {Icon && <Icon size={16} />}
@@ -163,7 +178,14 @@ function NavLink({ href, icon: Icon, label }: { href: string; icon?: any; label:
     );
 }
 
-function MobileNavLink({ href, icon: Icon, label, onClick }: { href: string; icon: any; label: string; onClick: () => void }) {
+interface MobileNavLinkProps {
+    href: string;
+    icon: React.ComponentType<{ size?: number }>;
+    label: string;
+    onClick: () => void;
+}
+
+function MobileNavLink({ href, icon: Icon, label, onClick }: MobileNavLinkProps) {
     return (
         <Link href={href} onClick={onClick} className="flex items-center gap-3 w-full p-3 text-slate-600 hover:bg-slate-50 rounded-lg transition-colors">
             <div className="w-8 h-8 bg-white border border-slate-100 rounded-lg flex items-center justify-center text-indigo-500 shadow-sm">

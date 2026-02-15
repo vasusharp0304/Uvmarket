@@ -5,6 +5,7 @@ import { LoadingSpinner } from '@/components/Loading';
 import AdminCharts from '@/components/admin/AdminCharts';
 import AIDataAnalysis from '@/components/AIDataAnalysis';
 import { Users, CreditCard, TrendingUp, Target, Percent, Activity, Sparkles, ArrowUpRight, BarChart3 } from 'lucide-react';
+import { Signal } from '@/types/dashboard';
 
 interface ChartData {
     revenue: { name: string; value: number }[];
@@ -26,7 +27,7 @@ interface AdminStats {
 
 export default function AdminDashboard() {
     const [stats, setStats] = useState<AdminStats | null>(null);
-    const [signals, setSignals] = useState<any[]>([]);
+    const [signals, setSignals] = useState<Signal[]>([]);
     const [loading, setLoading] = useState(true);
 
     const fetchStats = useCallback(async () => {

@@ -1,0 +1,46 @@
+- generic [active] [ref=e1]:
+  - navigation [ref=e64]:
+    - generic [ref=e66]:
+      - link "Logo UV Market School" [ref=e67] [cursor=pointer]:
+        - /url: /
+        - img "Logo" [ref=e69]
+        - generic [ref=e70]: UV Market School
+      - generic [ref=e72]:
+        - link "Log in" [ref=e73] [cursor=pointer]:
+          - /url: /login
+        - link "Get Started" [ref=e74] [cursor=pointer]:
+          - /url: /register
+  - generic [ref=e76]:
+    - heading "Welcome Back" [level=1] [ref=e77]
+    - paragraph [ref=e78]: Login to access your trading signals
+    - generic [ref=e111]: Cannot read properties of undefined (reading 'replace')
+    - generic [ref=e79]:
+      - generic [ref=e80]:
+        - generic [ref=e81]: Email
+        - textbox "Email" [ref=e82]:
+          - /placeholder: you@example.com
+          - text: uvmarketsignal@gmail.com
+      - generic [ref=e83]:
+        - generic [ref=e84]: Password
+        - textbox "Password" [ref=e85]:
+          - /placeholder: ••••••••
+          - text: Admin@123456
+      - link "Forgot Password?" [ref=e87] [cursor=pointer]:
+        - /url: /forgot-password
+      - button "Sign In" [ref=e88] [cursor=pointer]
+    - generic [ref=e89]:
+      - text: Don't have an account?
+      - link "Register here" [ref=e90] [cursor=pointer]:
+        - /url: /register
+  - generic [ref=e96] [cursor=pointer]:
+    - button "Open Next.js Dev Tools" [ref=e97]:
+      - img [ref=e98]
+    - generic [ref=e101]:
+      - button "Open issues overlay" [ref=e102]:
+        - generic [ref=e103]:
+          - generic [ref=e104]: "0"
+          - generic [ref=e105]: "1"
+        - generic [ref=e106]: Issue
+      - button "Collapse issues badge" [ref=e107]:
+        - img [ref=e108]
+  - alert [ref=e91]

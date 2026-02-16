@@ -1,1 +1,3 @@
-module.exports = { staticPageGenerationTimeout: 60, };
+module.exports = {
+  staticPageGenerationTimeout: 60,
+};

@@ -1,0 +1,76 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e3]:
+    - generic [ref=e7]:
+      - img [ref=e9]
+      - generic [ref=e11]:
+        - heading "Important Risk Disclosure" [level=2] [ref=e12]
+        - paragraph [ref=e13]: Please read carefully before proceeding
+    - generic [ref=e14]:
+      - paragraph [ref=e15]: "By accessing this application, you acknowledge and agree to the following terms:"
+      - generic [ref=e16]:
+        - generic [ref=e17]:
+          - img [ref=e19]
+          - generic [ref=e21]:
+            - heading "Educational Purpose Only" [level=4] [ref=e22]
+            - paragraph [ref=e23]: All content, signals, and analysis provided by UV Market School are strictly for educational and informational purposes. Keep in mind that we are not SEBI registered.
+        - generic [ref=e24]:
+          - img [ref=e26]
+          - generic [ref=e28]:
+            - heading "Not Financial Advice" [level=4] [ref=e29]
+            - paragraph [ref=e30]: Nothing on this platform constitutes financial, investment, or trading advice. We do not recommend buying or selling any specific securities.
+        - generic [ref=e31]:
+          - img [ref=e33]
+          - generic [ref=e36]:
+            - heading "High Risk Warning" [level=4] [ref=e37]
+            - paragraph [ref=e38]: Trading in financial markets (Stocks, Options, Futures, Crypto, Forex) involves a substantial risk of loss and is not suitable for every investor. You could lose some or all of your initial investment.
+        - generic [ref=e39]:
+          - img [ref=e41]
+          - generic [ref=e45]:
+            - heading "No Guarantees" [level=4] [ref=e46]
+            - paragraph [ref=e47]: Past performance is not indicative of future results. There are no guarantees of profit or avoidance of loss.
+        - generic [ref=e48]:
+          - img [ref=e50]
+          - generic [ref=e54]:
+            - heading "Independent Decision" [level=4] [ref=e55]
+            - paragraph [ref=e56]: You are solely responsible for your own investment decisions. We strongly recommend consulting with a qualified financial advisor before making any financial decisions.
+      - generic [ref=e57]: UV Market School and its owners, employees, or contributors shall not be held liable for any losses or damages resulting from the use of information provided on this platform.
+    - generic [ref=e58]:
+      - generic [ref=e59] [cursor=pointer]:
+        - generic [ref=e60]:
+          - checkbox "I have read, understood, and accept the Risk Disclosure." [ref=e61]
+          - img
+        - generic [ref=e62]: I have read, understood, and accept the Risk Disclosure.
+      - button "Accept to Continue" [disabled] [ref=e63]
+  - navigation [ref=e64]:
+    - generic [ref=e66]:
+      - link "Logo UV Market School" [ref=e67] [cursor=pointer]:
+        - /url: /
+        - img "Logo" [ref=e69]
+        - generic [ref=e70]: UV Market School
+      - generic [ref=e72]:
+        - link "Log in" [ref=e73] [cursor=pointer]:
+          - /url: /login
+        - link "Get Started" [ref=e74] [cursor=pointer]:
+          - /url: /register
+  - generic [ref=e76]:
+    - heading "Welcome Back" [level=1] [ref=e77]
+    - paragraph [ref=e78]: Login to access your trading signals
+    - generic [ref=e79]:
+      - generic [ref=e80]:
+        - generic [ref=e81]: Email
+        - textbox "Email" [ref=e82]:
+          - /placeholder: you@example.com
+      - generic [ref=e83]:
+        - generic [ref=e84]: Password
+        - textbox "Password" [ref=e85]:
+          - /placeholder: ••••••••
+      - link "Forgot Password?" [ref=e87] [cursor=pointer]:
+        - /url: /forgot-password
+      - button "Sign In" [ref=e88] [cursor=pointer]
+    - generic [ref=e89]:
+      - text: Don't have an account?
+      - link "Register here" [ref=e90] [cursor=pointer]:
+        - /url: /register
+  - button "Open Next.js Dev Tools" [ref=e97] [cursor=pointer]:
+    - img [ref=e98]
+  - alert [ref=e91]

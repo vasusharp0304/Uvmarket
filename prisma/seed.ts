@@ -1,11 +1,27 @@
 import { PrismaClient } from '../src/generated/prisma/client';
 import { PrismaBetterSqlite3 } from '@prisma/adapter-better-sqlite3';
+import { PrismaLibSql } from '@prisma/adapter-libsql';
 import bcrypt from 'bcryptjs';
 import path from 'path';
 
-const dbPath = path.join(process.cwd(), 'dev.db');
-const adapter = new PrismaBetterSqlite3({ url: dbPath });
-const prisma = new PrismaClient({ adapter });
+const tursoUrl = process.env.TURSO_DATABASE_URL;
+const tursoAuthToken = process.env.TURSO_AUTH_TOKEN;
+
+const prisma = (() => {
+    if (tursoUrl && tursoUrl.startsWith('libsql://')) {
+        const adapter = new PrismaLibSql({
+            url: tursoUrl,
+            authToken: tursoAuthToken,
+        });
+        return new PrismaClient({ adapter });
+    }
+
+    const dbUrl = process.env.DATABASE_URL || 'file:./dev.db';
+    const filename = dbUrl.replace('file:', '').trim();
+    const resolvedPath = path.isAbsolute(filename) ? filename : path.join(process.cwd(), filename);
+    const adapter = new PrismaBetterSqlite3({ url: resolvedPath });
+    return new PrismaClient({ adapter });
+})();
 
 // Helper to generate dates in the past
 function getPastDate(daysAgo: number): Date {

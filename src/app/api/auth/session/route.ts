@@ -1,10 +1,12 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import { getServerSession } from '@/lib/auth';
 
-export async function GET(req: NextRequest) {
+export const dynamic = 'force-dynamic';
+
+export async function GET() {
     try {
         const session = await getServerSession();
-        
+
         if (!session?.user) {
             return NextResponse.json({ user: null }, { status: 401 });
         }

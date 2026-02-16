@@ -26,15 +26,26 @@ export default function LoginPage() {
 
             if (result?.error) {
                 setError(result.error);
+                return;
+            }
+
+            // Fetch session to determine redirect
+            const res = await fetch('/api/auth/session', { cache: 'no-store' });
+            if (!res.ok) {
+                setError('Unable to establish a session. Please try again.');
+                return;
+            }
+
+            const session = await res.json();
+            if (!session?.user) {
+                setError('Unable to establish a session. Please try again.');
+                return;
+            }
+
+            if (session.user.role === 'ADMIN') {
+                router.push('/admin');
             } else {
-                // Fetch session to determine redirect
-                const res = await fetch('/api/auth/session');
-                const session = await res.json();
-                if (session?.user?.role === 'ADMIN') {
-                    router.push('/admin');
-                } else {
-                    router.push('/dashboard');
-                }
+                router.push('/dashboard');
             }
         } catch {
             setError('Something went wrong. Please try again.');

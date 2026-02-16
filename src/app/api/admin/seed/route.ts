@@ -1,15 +1,15 @@
 import { NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 import bcrypt from 'bcryptjs';
+
+export const dynamic = 'force-dynamic';
 
 // This endpoint is for one-time setup after deployment
 // It should be protected and ideally disabled after initial setup
 const ADMIN_EMAIL = 'uvmarketsignal@gmail.com';
 const ADMIN_PASSWORD = 'Admin@123456';
 
-export async function POST() {
+const seedDatabase = async () => {
   try {
     // In production, verify the request is authorized
     // For initial deployment, you might want to add a token check here
@@ -73,4 +73,12 @@ export async function POST() {
       { status: 500 }
     );
   }
+};
+
+export async function GET() {
+  return seedDatabase();
+}
+
+export async function POST() {
+  return seedDatabase();
 }

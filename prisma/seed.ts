@@ -341,11 +341,11 @@ const SIGNALS_DATA = [
 ];
 
 async function main() {
-    const adminEmail = 'admin@uvmarketschool.com';
+    const adminEmail = 'uvmarketsignal@gmail.com';
     const existing = await prisma.user.findUnique({ where: { email: adminEmail } });
 
     if (!existing) {
-        const passwordHash = await bcrypt.hash('admin123', 12);
+        const passwordHash = await bcrypt.hash('Admin@123456', 12);
         await prisma.user.create({
             data: {
                 name: 'UV Market Admin',
@@ -357,8 +357,8 @@ async function main() {
             },
         });
         console.log('✅ Admin user created:');
-        console.log('   Email: admin@uvmarketschool.com');
-        console.log('   Password: admin123');
+        console.log('   Email: uvmarketsignal@gmail.com');
+        console.log('   Password: Admin@123456');
     } else {
         console.log('✅ Admin user already exists.');
     }

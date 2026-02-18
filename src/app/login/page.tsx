@@ -26,13 +26,11 @@ export default function LoginPage() {
 
             if (result?.error) {
                 // Handle both string errors and error objects safely
-                const errorMessage = typeof result.error === 'string' 
-                    ? result.error 
-                    : result.error instanceof Error 
-                        ? result.error.message 
-                        : typeof result.error === 'object' && result.error !== null
-                        ? result.error.message || 'Login failed. Please try again.'
-                        : 'Login failed. Please try again.';
+                const errorMessage = typeof result.error === 'string'
+                    ? result.error
+                    : typeof result.error === 'object' && result.error !== null && 'message' in result.error
+                    ? (result.error as { message: string }).message || 'Login failed. Please try again.'
+                    : 'Login failed. Please try again.';
                 setError(errorMessage);
             } else {
                 // Fetch session to determine redirect

@@ -1,7 +1,44 @@
 import { PrismaClient } from '@prisma/client';
+import { PrismaPg } from '@prisma/adapter-pg';
+import { PrismaLibSql } from '@prisma/adapter-libsql';
+import { PrismaBetterSqlite3 } from '@prisma/adapter-better-sqlite3';
+import { Pool } from 'pg';
 import bcrypt from 'bcryptjs';
+import path from 'path';
+import dotenv from 'dotenv';
 
-const prisma = new PrismaClient();
+// Load environment variables
+dotenv.config({ path: '.env.local' });
+
+// Initialize Prisma client based on environment
+let prisma: PrismaClient;
+
+const databaseUrl = process.env.DATABASE_URL;
+const tursoUrl = process.env.TURSO_DATABASE_URL;
+const tursoAuthToken = process.env.TURSO_AUTH_TOKEN;
+
+// Check for PostgreSQL (Railway)
+if (databaseUrl && databaseUrl.startsWith('postgres://')) {
+    console.log('🔌 Using PostgreSQL database...');
+    const pool = new Pool({ connectionString: databaseUrl });
+    const adapter = new PrismaPg(pool);
+    prisma = new PrismaClient({ adapter });
+}
+// Check for Turso/LibSQL
+else if (tursoUrl && tursoUrl.startsWith('libsql://')) {
+    console.log('🔌 Using Turso database...');
+    const adapter = new PrismaLibSql({
+        url: tursoUrl,
+        authToken: tursoAuthToken,
+    });
+    prisma = new PrismaClient({ adapter });
+} else {
+    // Fallback to local SQLite
+    const dbPath = path.join(process.cwd(), 'dev.db');
+    console.log('💾 Using local SQLite database...');
+    const adapter = new PrismaBetterSqlite3({ url: dbPath });
+    prisma = new PrismaClient({ adapter });
+}
 
 async function main() {
     // Create admin user

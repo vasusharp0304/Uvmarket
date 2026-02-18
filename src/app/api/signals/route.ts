@@ -121,7 +121,7 @@ export async function POST(req: NextRequest) {
         });
 
         if (customers.length > 0) {
-            const notifications = customers.map(customer => ({
+            const notifications = customers.map((customer: any) => ({
                 userId: customer.id,
                 title: `New Signal: ${symbol}`,
                 message: `${direction} ${symbol} @ ${entryPrice}. Target: ${targetPrice}, SL: ${stopLossPrice}`,

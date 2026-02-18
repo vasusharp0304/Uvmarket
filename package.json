@@ -7,6 +7,7 @@
     "build": "prisma generate && prisma migrate deploy && next build",
     "start": "next start",
     "lint": "eslint",
+    "type-check": "tsc --noEmit",
     "db:test": "tsx scripts/test-db-connection.ts",
     "db:seed": "tsx prisma/seed.ts",
     "db:seed:prod": "tsx scripts/seed-prod.ts",
@@ -19,6 +20,8 @@
     "env:verify:prod": "tsx scripts/verify-env.ts --production",
     "railway:build": "prisma generate && prisma migrate deploy && next build",
     "railway:start": "next start",
+    "railway:seed": "tsx scripts/seed-prod.ts",
+    "generate:icons": "node scripts/generate-icons.js",
     "postinstall": "prisma generate"
   },
   "dependencies": {

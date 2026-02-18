@@ -18,12 +18,12 @@ export async function GET() {
 
         const totalTrades = closedSignals.length;
         const winners = closedSignals.filter(
-            (s) => s.status === 'TARGET_HIT' || (s.returnPercent !== null && s.returnPercent > 0)
+            (s: any) => s.status === 'TARGET_HIT' || (s.returnPercent !== null && s.returnPercent > 0)
         ).length;
         const losers = totalTrades - winners;
         const avgReturn =
             totalTrades > 0
-                ? closedSignals.reduce((sum, s) => sum + (s.returnPercent || 0), 0) / totalTrades
+                ? closedSignals.reduce((sum: number, s: any) => sum + (s.returnPercent || 0), 0) / totalTrades
                 : 0;
         const winRate = totalTrades > 0 ? (winners / totalTrades) * 100 : 0;
 

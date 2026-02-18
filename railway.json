@@ -8,10 +8,14 @@
       "prisma/**",
       "public/**",
       "package.json",
-      "tsconfig.json"
+      "tsconfig.json",
+      "next.config.ts",
+      "tailwind.config.ts",
+      "postcss.config.mjs"
     ],
     "env": {
-      "NODE_ENV": "production"
+      "NODE_ENV": "production",
+      "NEXT_TELEMETRY_DISABLED": "1"
     }
   },
   "deploy": {

@@ -54,14 +54,14 @@ export async function GET() {
         ]);
 
         const winners = closedSignals.filter(
-            (s) => s.returnPercent !== null && s.returnPercent > 0
+            (s: { returnPercent: number | null }) => s.returnPercent !== null && s.returnPercent > 0
         ).length;
         const totalClosed = closedSignals.length;
         const winRate = totalClosed > 0 ? Math.round((winners / totalClosed) * 100 * 100) / 100 : 0;
         const avgReturn =
             totalClosed > 0
                 ? Math.round(
-                    (closedSignals.reduce((sum, s) => sum + (s.returnPercent || 0), 0) / totalClosed) * 100
+                    (closedSignals.reduce((sum: number, s: { returnPercent: number | null }) => sum + (s.returnPercent || 0), 0) / totalClosed) * 100
                 ) / 100
                 : 0;
 
@@ -77,7 +77,7 @@ export async function GET() {
             revenueByMonthMap.set(key, 0);
         }
 
-        chartPayments.forEach(p => {
+        chartPayments.forEach((p: { amount: number; createdAt: Date }) => {
             const d = new Date(p.createdAt);
             const key = `${monthNames[d.getMonth()]} ${d.getFullYear()}`;
             if (revenueByMonthMap.has(key)) {
@@ -95,7 +95,7 @@ export async function GET() {
             pnlByMonthMap.set(key, 0);
         }
 
-        chartSignals.forEach(s => {
+        chartSignals.forEach((s: { returnPercent: number | null; createdAt: Date }) => {
             const d = new Date(s.createdAt);
             const key = `${monthNames[d.getMonth()]} ${d.getFullYear()}`;
             if (pnlByMonthMap.has(key)) {

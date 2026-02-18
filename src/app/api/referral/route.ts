@@ -34,7 +34,7 @@ export async function GET(req: Request) {
                 referralLink: `/register?ref=${code}`,
                 referrals,
                 totalReferrals: referrals.length,
-                completedReferrals: referrals.filter(r => r.status === 'completed').length,
+                completedReferrals: referrals.filter((r: any) => r.status === 'completed').length,
             });
         }
 
@@ -49,7 +49,7 @@ export async function GET(req: Request) {
             referralLink: `/register?ref=${user.referralCode}`,
             referrals,
             totalReferrals: referrals.length,
-            completedReferrals: referrals.filter(r => r.status === 'completed').length,
+            completedReferrals: referrals.filter((r: any) => r.status === 'completed').length,
         });
     } catch (error) {
         return NextResponse.json({ error: 'Failed to fetch referral info' }, { status: 500 });

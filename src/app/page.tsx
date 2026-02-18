@@ -15,11 +15,11 @@ async function getStats() {
 
         const totalTrades = closedSignals.length;
         const winners = closedSignals.filter(
-            (s) => s.returnPercent !== null && s.returnPercent > 0
+            (s: any) => s.returnPercent !== null && s.returnPercent > 0
         ).length;
         const avgReturn =
             totalTrades > 0
-                ? closedSignals.reduce((sum, s) => sum + (s.returnPercent || 0), 0) / totalTrades
+                ? closedSignals.reduce((sum: number, s: any) => sum + (s.returnPercent || 0), 0) / totalTrades
                 : 0;
 
         const activeSignals = await prisma.signal.count({
@@ -182,7 +182,7 @@ export default async function HomePage() {
 
                 {recentSignals.length > 0 ? (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        {recentSignals.map((signal) => (
+                        {recentSignals.map((signal: any) => (
                             <div key={signal.id} className="card group hover:shadow-xl transition-all duration-300 border-slate-200">
                                 <div className="p-5">
                                     <div className="flex justify-between items-start mb-4">

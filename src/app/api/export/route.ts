@@ -38,7 +38,7 @@ export async function GET(req: Request) {
         }
 
         if (type === 'invoices') {
-            const userId = (session.user as any).role === 'ADMIN' ? undefined : (session.user as any).id;
+            const userId = session.user.role === 'ADMIN' ? undefined : session.user.id;
             const invoices = await prisma.invoice.findMany({
                 where: userId ? { userId } : {},
                 orderBy: { createdAt: 'desc' },

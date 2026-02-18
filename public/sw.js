@@ -51,8 +51,8 @@ self.addEventListener('push', (event) => {
     const data = event.data?.json() || {};
     const options = {
         body: data.body || 'New update from UV Market School',
-        icon: '/icons/icon-192.png',
-        badge: '/icons/icon-192.png',
+        icon: '/icons/icon.svg',
+        badge: '/icons/icon.svg',
         vibrate: [200, 100, 200],
         data: { url: data.url || '/' },
     };

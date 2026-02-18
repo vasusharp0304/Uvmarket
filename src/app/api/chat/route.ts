@@ -12,7 +12,7 @@ export async function GET(req: Request) {
 
         const { searchParams } = new URL(req.url);
         const messages = await prisma.chatMessage.findMany({
-            where: { userId: (session.user as any).id },
+            where: { userId: session.user.id },
             orderBy: { createdAt: 'asc' },
             take: 100,
         });
@@ -31,7 +31,7 @@ export async function POST(req: Request) {
         const { message } = await req.json();
         if (!message?.trim()) return NextResponse.json({ error: 'Message is required' }, { status: 400 });
 
-        const userId = (session.user as any).id;
+        const userId = session.user.id;
         const trimmedMessage = message.trim();
 
         // Check if this message needs admin review
@@ -71,7 +71,7 @@ export async function POST(req: Request) {
                         data: {
                             userId: admin.id,
                             title: 'Chat Requires Attention',
-                            message: `User "${(session.user as any).name || 'Unknown'}" asked a question that needs admin review.`,
+                            message: `User "${session.user.name || 'Unknown'}" asked a question that needs admin review.`,
                             type: 'system',
                             link: '/admin/chats',
                         },

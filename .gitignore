@@ -42,3 +42,17 @@ yarn-error.log*
 next-env.d.ts
 
 /src/generated/prisma
+
+# database
+*.db
+*.db-journal
+prisma/migrations/*_*/migration.sql
+!prisma/migrations/.keep
+
+# build output
+build_output.txt
+build.log
+
+# uploads
+/uploads/*
+!/uploads/.gitkeep

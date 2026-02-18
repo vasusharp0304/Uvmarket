@@ -5,10 +5,23 @@ import { defineConfig } from "prisma/config";
 
 loadEnv();
 
-const datasourceUrl =
-  process.env.DATABASE_URL ??
-  process.env.TURSO_DATABASE_URL ??
-  "file:./dev.db";
+// Determine the appropriate database URL based on environment
+const getDatabaseUrl = () => {
+  // Priority 1: PostgreSQL (Railway)
+  if (process.env.DATABASE_URL?.startsWith('postgres://')) {
+    return process.env.DATABASE_URL;
+  }
+  
+  // Priority 2: Turso/LibSQL
+  if (process.env.TURSO_DATABASE_URL?.startsWith('libsql://')) {
+    return process.env.TURSO_DATABASE_URL;
+  }
+  
+  // Priority 3: Local SQLite (development)
+  return process.env.DATABASE_URL ?? "file:./dev.db";
+};
+
+const datasourceUrl = getDatabaseUrl();
 
 export default defineConfig({
   schema: "prisma/schema.prisma",

@@ -1,6 +1,8 @@
 import { PrismaClient } from '@prisma/client';
 import { PrismaBetterSqlite3 } from '@prisma/adapter-better-sqlite3';
 import { PrismaLibSql } from '@prisma/adapter-libsql';
+import { PrismaPg } from '@prisma/adapter-pg';
+import { Pool } from 'pg';
 import bcrypt from 'bcryptjs';
 import path from 'path';
 import dotenv from 'dotenv';
@@ -12,10 +14,20 @@ dotenv.config({ path: envPath });
 // Initialize Prisma client based on environment
 let prisma: PrismaClient;
 
+const databaseUrl = process.env.DATABASE_URL;
 const tursoUrl = process.env.TURSO_DATABASE_URL;
 const tursoAuthToken = process.env.TURSO_AUTH_TOKEN;
 
-if (tursoUrl && tursoAuthToken && tursoUrl.startsWith('libsql://')) {
+// Check for PostgreSQL (Railway)
+if (databaseUrl && databaseUrl.startsWith('postgres://')) {
+    console.log('🔌 Using PostgreSQL database (Railway)...');
+    console.log(`   URL: ${databaseUrl.replace(/:([^:@]+)@/, ':****@')}`);
+    const pool = new Pool({ connectionString: databaseUrl });
+    const adapter = new PrismaPg(pool);
+    prisma = new PrismaClient({ adapter });
+}
+// Check for Turso/LibSQL
+else if (tursoUrl && tursoAuthToken && tursoUrl.startsWith('libsql://')) {
     console.log('🔌 Using Turso database...');
     console.log(`   URL: ${tursoUrl}`);
     const adapter = new PrismaLibSql({

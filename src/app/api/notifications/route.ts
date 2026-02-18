@@ -14,7 +14,7 @@ export async function GET(req: Request) {
 
         const notifications = await prisma.notification.findMany({
             where: {
-                userId: (session.user as any).id,
+                userId: session.user.id,
                 ...(unreadOnly ? { isRead: false } : {}),
             },
             orderBy: { createdAt: 'desc' },
@@ -22,7 +22,7 @@ export async function GET(req: Request) {
         });
 
         const unreadCount = await prisma.notification.count({
-            where: { userId: (session.user as any).id, isRead: false },
+            where: { userId: session.user.id, isRead: false },
         });
 
         return NextResponse.json({ notifications, unreadCount });
@@ -41,12 +41,12 @@ export async function PATCH(req: Request) {
 
         if (markAll) {
             await prisma.notification.updateMany({
-                where: { userId: (session.user as any).id, isRead: false },
+                where: { userId: session.user.id, isRead: false },
                 data: { isRead: true },
             });
         } else if (ids?.length) {
             await prisma.notification.updateMany({
-                where: { id: { in: ids }, userId: (session.user as any).id },
+                where: { id: { in: ids }, userId: session.user.id },
                 data: { isRead: true },
             });
         }

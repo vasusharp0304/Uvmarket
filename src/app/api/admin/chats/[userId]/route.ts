@@ -1,9 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/auth';
+import { isAdmin } from '@/lib/auth-helpers';
 import { prisma } from '@/lib/prisma';
-
-const ADMIN_EMAIL = 'uvmarketsignal@gmail.com';
 
 // GET /api/admin/chats/[userId] — admin only
 // Returns full conversation history for a specific user
@@ -12,8 +9,7 @@ export async function GET(
     { params }: { params: Promise<{ userId: string }> }
 ) {
     try {
-        const session = await getServerSession(authOptions);
-        if (!session || (session.user as any).role !== 'ADMIN') {
+        if (!(await isAdmin())) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
 
@@ -58,8 +54,7 @@ export async function POST(
     { params }: { params: Promise<{ userId: string }> }
 ) {
     try {
-        const session = await getServerSession(authOptions);
-        if (!session || (session.user as any).role !== 'ADMIN') {
+        if (!(await isAdmin())) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
 
@@ -133,8 +128,7 @@ export async function PATCH(
     { params }: { params: Promise<{ userId: string }> }
 ) {
     try {
-        const session = await getServerSession(authOptions);
-        if (!session || (session.user as any).role !== 'ADMIN') {
+        if (!(await isAdmin())) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
 

@@ -11,7 +11,7 @@ export const metadata: Metadata = {
     "Professional swing & intraday trading signals for Indian markets. Educational recommendations by UV Market School.",
   icons: {
     icon: "/favicon.svg",
-    apple: "/icons/icon-192.png",
+    apple: "/favicon.svg",
   },
   manifest: "/manifest.json",
   appleWebApp: {

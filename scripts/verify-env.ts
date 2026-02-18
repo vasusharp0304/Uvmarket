@@ -11,7 +11,6 @@
  */
 
 import dotenv from 'dotenv';
-import path from 'path';
 
 // Load environment variables
 const envPath = process.argv.includes('--production') ? '.env' : '.env.local';
@@ -113,7 +112,6 @@ async function main() {
     console.log(`Checking env file: ${envPath}\n`);
 
     let hasErrors = false;
-    let hasWarnings = false;
 
     console.log('Required Environment Variables:');
     console.log('----------------------------------------');

@@ -102,8 +102,6 @@ export const authOptions: NextAuthOptions = {
     secret: process.env.NEXTAUTH_SECRET,
     // Enable debug mode in development
     debug: process.env.NODE_ENV === 'development',
-    // Trust the host header (important for Vercel and other serverless platforms)
-    trustHost: true,
 };
 
 // Helper function to get server-side session

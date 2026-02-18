@@ -16,9 +16,9 @@ export async function GET(req: Request) {
         if (!session?.user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
         const { searchParams } = new URL(req.url);
-        const userId = (session.user as any).role === 'ADMIN'
+        const userId = session.user.role === 'ADMIN'
             ? searchParams.get('userId') || undefined
-            : (session.user as any).id;
+            : session.user.id;
 
         const invoices = await prisma.invoice.findMany({
             where: userId ? { userId } : {},
@@ -36,7 +36,7 @@ export async function GET(req: Request) {
 export async function POST(req: Request) {
     try {
         const session = await getServerSession(authOptions);
-        if (!session || (session.user as any).role !== 'ADMIN') {
+        if (!session || session.user.role !== 'ADMIN') {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
 

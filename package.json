@@ -10,6 +10,8 @@
     "db:test": "tsx scripts/test-db-connection.ts",
     "db:seed": "tsx prisma/seed.ts",
     "db:seed:prod": "tsx scripts/seed-prod.ts",
+    "env:verify": "tsx scripts/verify-env.ts",
+    "env:verify:prod": "tsx scripts/verify-env.ts --production",
     "postinstall": "prisma generate"
   },
   "dependencies": {

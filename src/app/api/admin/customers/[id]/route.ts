@@ -17,7 +17,13 @@ export async function PUT(
         const { id } = await params;
         const body = await req.json();
 
-        const updateData: any = {};
+        const updateData: {
+            isActive?: boolean;
+            subscriptionStatus?: string;
+            subscriptionExpiresAt?: Date | null;
+            name?: string;
+            phone?: string;
+        } = {};
         if (body.isActive !== undefined) updateData.isActive = body.isActive;
         if (body.subscriptionStatus !== undefined) updateData.subscriptionStatus = body.subscriptionStatus;
         if (body.subscriptionExpiresAt !== undefined) {

@@ -15,7 +15,10 @@ export async function GET(req: NextRequest) {
         const skip = (page - 1) * limit;
 
         // Build where clause
-        const where: any = {};
+        const where: {
+            isVisibleToCustomers?: boolean;
+            status?: { in: string[] } | string;
+        } = {};
 
         // Use a more specific type assertion or optional chaining to avoid 'any'
         const userRole = session?.user ? (session.user as { role: string }).role : null;

@@ -66,7 +66,7 @@ export async function POST(req: Request) {
                 });
 
                 // Create notification for each admin
-                await Promise.all(admins.map(admin =>
+                await Promise.all(admins.map((admin: any) =>
                     prisma.notification.create({
                         data: {
                             userId: admin.id,

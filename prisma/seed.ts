@@ -1,11 +1,47 @@
 import { PrismaClient } from '@prisma/client';
+import { PrismaPg } from '@prisma/adapter-pg';
+import { PrismaLibSql } from '@prisma/adapter-libsql';
 import { PrismaBetterSqlite3 } from '@prisma/adapter-better-sqlite3';
+import { Pool } from 'pg';
 import bcrypt from 'bcryptjs';
 import path from 'path';
+import dotenv from 'dotenv';
 
-const dbPath = path.join(process.cwd(), 'dev.db');
-const adapter = new PrismaBetterSqlite3({ url: dbPath });
-const prisma = new PrismaClient({ adapter });
+// Load environment variables
+dotenv.config({ path: '.env.local' });
+
+// Initialize Prisma client based on environment
+let prisma: PrismaClient;
+
+const databaseUrl = process.env.DATABASE_URL;
+const tursoUrl = process.env.TURSO_DATABASE_URL;
+const tursoAuthToken = process.env.TURSO_AUTH_TOKEN;
+
+// Check for PostgreSQL (Railway)
+if (databaseUrl && databaseUrl.startsWith('postgres://')) {
+    console.log('🔌 Using PostgreSQL database...');
+    console.log(`   URL: ${databaseUrl.replace(/:([^:@]+)@/, ':****@')}`);
+    const pool = new Pool({ connectionString: databaseUrl });
+    const adapter = new PrismaPg(pool);
+    prisma = new PrismaClient({ adapter });
+}
+// Check for Turso/LibSQL
+else if (tursoUrl && tursoUrl.startsWith('libsql://')) {
+    console.log('🔌 Using Turso database...');
+    console.log(`   URL: ${tursoUrl}`);
+    const adapter = new PrismaLibSql({
+        url: tursoUrl,
+        authToken: tursoAuthToken,
+    });
+    prisma = new PrismaClient({ adapter });
+} else {
+    // Fallback to local SQLite
+    const dbPath = path.join(process.cwd(), 'dev.db');
+    console.log('💾 Using local SQLite database...');
+    console.log(`   Path: ${dbPath}`);
+    const adapter = new PrismaBetterSqlite3({ url: dbPath });
+    prisma = new PrismaClient({ adapter });
+}
 
 // Helper to generate dates in the past
 function getPastDate(daysAgo: number): Date {
@@ -341,100 +377,132 @@ const SIGNALS_DATA = [
 ];
 
 async function main() {
-    const adminEmail = 'uvmarketsignal@gmail.com';
-    const existing = await prisma.user.findUnique({ where: { email: adminEmail } });
+    console.log('🌱 Starting database seed...\n');
 
-    if (!existing) {
-        const passwordHash = await bcrypt.hash('Admin@123456', 12);
-        await prisma.user.create({
-            data: {
-                name: 'UV Market Admin',
-                email: adminEmail,
-                passwordHash,
-                role: 'ADMIN',
-                isActive: true,
-                subscriptionStatus: 'active',
-            },
-        });
-        console.log('✅ Admin user created:');
-        console.log('   Email: uvmarketsignal@gmail.com');
-        console.log('   Password: Admin@123456');
-    } else {
-        console.log('✅ Admin user already exists.');
-    }
+    try {
+        // Connect to database
+        await prisma.$connect();
+        console.log('✅ Database connection successful\n');
 
-    const admin = await prisma.user.findUnique({ where: { email: adminEmail } });
-    if (!admin) return;
+        const adminEmail = 'uvmarketsignal@gmail.com';
+        const existing = await prisma.user.findUnique({ where: { email: adminEmail } });
 
-    const signalCount = await prisma.signal.count();
-    if (signalCount === 0) {
-        const signalsWithCalculatedFields = SIGNALS_DATA.map((signal) => {
-            const exitPrice = calculateExitPrice(
-                signal.entryPrice,
-                signal.targetPrice,
-                signal.stopLossPrice,
-                signal.direction,
-                signal.status
+        if (!existing) {
+            const passwordHash = await bcrypt.hash('Admin@123456', 12);
+            await prisma.user.create({
+                data: {
+                    name: 'UV Market Admin',
+                    email: adminEmail,
+                    passwordHash,
+                    role: 'ADMIN',
+                    isActive: true,
+                    subscriptionStatus: 'active',
+                },
+            });
+            console.log('✅ Admin user created:');
+            console.log('   Email: uvmarketsignal@gmail.com');
+            console.log('   Password: Admin@123456');
+        } else {
+            console.log('✅ Admin user already exists.');
+        }
+
+        const admin = await prisma.user.findUnique({ where: { email: adminEmail } });
+        if (!admin) return;
+
+        const signalCount = await prisma.signal.count();
+        if (signalCount === 0) {
+            const signalsWithCalculatedFields = SIGNALS_DATA.map((signal) => {
+                const exitPrice = calculateExitPrice(
+                    signal.entryPrice,
+                    signal.targetPrice,
+                    signal.stopLossPrice,
+                    signal.direction,
+                    signal.status
+                );
+                const returnPercent = calculateReturnPercent(
+                    signal.entryPrice,
+                    exitPrice,
+                    signal.direction
+                );
+
+                return {
+                    createdById: admin.id,
+                    symbol: signal.symbol,
+                    companyName: signal.companyName,
+                    segment: signal.segment,
+                    signalType: signal.signalType,
+                    direction: signal.direction,
+                    entryPrice: signal.entryPrice,
+                    targetPrice: signal.targetPrice,
+                    stopLossPrice: signal.stopLossPrice,
+                    status: signal.status,
+                    exitPrice,
+                    returnPercent,
+                    notes: signal.notes,
+                    isVisibleToCustomers: true,
+                    entryDateTime: getPastDate(signal.daysAgo),
+                    exitDateTime: signal.status !== 'ACTIVE' && signal.status !== 'PENDING'
+                        ? getPastDate(signal.daysAgo - Math.floor(Math.random() * 5) - 2)
+                        : null,
+                };
+            });
+
+            await prisma.signal.createMany({
+                data: signalsWithCalculatedFields,
+            });
+
+            console.log(`✅ Created ${SIGNALS_DATA.length} realistic trading signals with detailed analysis`);
+
+            // Print summary statistics
+            const closedSignals = signalsWithCalculatedFields.filter(
+                s => s.status === 'TARGET_HIT' || s.status === 'STOP_LOSS' || s.status === 'CLOSED_MANUAL'
             );
-            const returnPercent = calculateReturnPercent(
-                signal.entryPrice,
-                exitPrice,
-                signal.direction
-            );
+            const winners = closedSignals.filter(s => (s.returnPercent || 0) > 0);
+            const losers = closedSignals.filter(s => (s.returnPercent || 0) < 0);
 
-            return {
-                createdById: admin.id,
-                symbol: signal.symbol,
-                companyName: signal.companyName,
-                segment: signal.segment,
-                signalType: signal.signalType,
-                direction: signal.direction,
-                entryPrice: signal.entryPrice,
-                targetPrice: signal.targetPrice,
-                stopLossPrice: signal.stopLossPrice,
-                status: signal.status,
-                exitPrice,
-                returnPercent,
-                notes: signal.notes,
-                isVisibleToCustomers: true,
-                entryDateTime: getPastDate(signal.daysAgo),
-                exitDateTime: signal.status !== 'ACTIVE' && signal.status !== 'PENDING'
-                    ? getPastDate(signal.daysAgo - Math.floor(Math.random() * 5) - 2)
-                    : null,
-            };
-        });
+            const totalReturn = closedSignals.reduce((sum, s) => sum + (s.returnPercent || 0), 0);
+            const avgReturn = totalReturn / closedSignals.length;
 
-        await prisma.signal.createMany({
-            data: signalsWithCalculatedFields,
-        });
+            console.log('\n📊 Signal Performance Summary:');
+            console.log(`   Total Signals: ${SIGNALS_DATA.length}`);
+            console.log(`   Closed Trades: ${closedSignals.length}`);
+            console.log(`   Winners: ${winners.length} (${((winners.length / closedSignals.length) * 100).toFixed(1)}%)`);
+            console.log(`   Losers: ${losers.length} (${((losers.length / closedSignals.length) * 100).toFixed(1)}%)`);
+            console.log(`   Average Return: ${avgReturn.toFixed(2)}%`);
+            console.log(`   Total P&L: ${totalReturn.toFixed(2)}%`);
+        } else {
+            console.log('✅ Signals already exist, skipping seed.');
+        }
 
-        console.log(`✅ Created ${SIGNALS_DATA.length} realistic trading signals with detailed analysis`);
+        // Create default app settings
+        const settingsCount = await prisma.appSettings.count();
+        if (settingsCount === 0) {
+            await prisma.appSettings.create({
+                data: {
+                    id: 'default',
+                    appName: 'UV Market School',
+                    tagline: 'Professional Trading Signals',
+                    primaryColor: '#7c3aed',
+                    companyName: 'UV Market School',
+                    gstPercent: 18,
+                },
+            });
+            console.log('✅ Default app settings created.');
+        } else {
+            console.log('✅ App settings already exist.');
+        }
 
-        // Print summary statistics
-        const closedSignals = signalsWithCalculatedFields.filter(
-            s => s.status === 'TARGET_HIT' || s.status === 'STOP_LOSS' || s.status === 'CLOSED_MANUAL'
-        );
-        const winners = closedSignals.filter(s => (s.returnPercent || 0) > 0);
-        const losers = closedSignals.filter(s => (s.returnPercent || 0) < 0);
+        console.log('\n🌱 Database seed completed successfully!');
 
-        const totalReturn = closedSignals.reduce((sum, s) => sum + (s.returnPercent || 0), 0);
-        const avgReturn = totalReturn / closedSignals.length;
-
-        console.log('\n📊 Signal Performance Summary:');
-        console.log(`   Total Signals: ${SIGNALS_DATA.length}`);
-        console.log(`   Closed Trades: ${closedSignals.length}`);
-        console.log(`   Winners: ${winners.length} (${((winners.length / closedSignals.length) * 100).toFixed(1)}%)`);
-        console.log(`   Losers: ${losers.length} (${((losers.length / closedSignals.length) * 100).toFixed(1)}%)`);
-        console.log(`   Average Return: ${avgReturn.toFixed(2)}%`);
-        console.log(`   Total P&L: ${totalReturn.toFixed(2)}%`);
-    } else {
-        console.log('✅ Signals already exist, skipping seed.');
+    } catch (error) {
+        console.error('\n❌ Seed failed:', error);
+        if (error instanceof Error) {
+            console.error('Error details:', error.message);
+        }
+        process.exit(1);
+    } finally {
+        await prisma.$disconnect();
     }
 }
 
-main()
-    .catch((e) => {
-        console.error(e);
-        process.exit(1);
-    })
-    .finally(() => prisma.$disconnect());
+main();

@@ -49,7 +49,7 @@ export async function GET(req: NextRequest) {
 
         // Get counts for each user
         const usersWithCounts = await Promise.all(
-            usersWithChats.map(async (user) => {
+            usersWithChats.map(async (user: any) => {
                 const [totalMessages, needsReviewCount, unreadCount] = await Promise.all([
                     prisma.chatMessage.count({
                         where: { userId: user.id },
@@ -87,7 +87,7 @@ export async function GET(req: NextRequest) {
         );
 
         // Sort by needsReviewCount (desc), then by last message date (desc)
-        const sortedUsers = usersWithCounts.sort((a, b) => {
+        const sortedUsers = usersWithCounts.sort((a: any, b: any) => {
             if (b.needsReviewCount !== a.needsReviewCount) {
                 return b.needsReviewCount - a.needsReviewCount;
             }

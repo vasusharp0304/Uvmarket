@@ -21,7 +21,7 @@ export async function GET(req: Request) {
 
             if (format === 'csv') {
                 const headers = 'Date,Symbol,Company,Segment,Type,Direction,Entry,Target,StopLoss,Exit,Return%,Status\n';
-                const rows = signals.map(s =>
+                const rows = signals.map((s: any) =>
                     `${new Date(s.entryDateTime).toISOString()},${s.symbol},"${s.companyName}",${s.segment},${s.signalType},${s.direction},${s.entryPrice},${s.targetPrice},${s.stopLossPrice},${s.exitPrice || ''},${s.returnPercent || ''},${s.status}`
                 ).join('\n');
                 const csv = headers + rows;
@@ -46,7 +46,7 @@ export async function GET(req: Request) {
 
             if (format === 'csv') {
                 const headers = 'InvoiceNo,Date,Customer,Amount,GST,Total,Status\n';
-                const rows = invoices.map(i =>
+                const rows = invoices.map((i: any) =>
                     `${i.invoiceNumber},${new Date(i.createdAt).toISOString()},"${i.customerName}",${i.subtotal},${i.gstAmount},${i.totalAmount},Paid`
                 ).join('\n');
 

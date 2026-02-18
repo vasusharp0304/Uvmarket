@@ -1,0 +1,39 @@
+# Nixpacks Configuration for Railway Deployment
+# This file configures how Railway builds your application
+
+[phases.setup]
+nixPkgs = ["postgresql", "nodejs_20", "git"]
+
+[phases.build]
+cmds = ["npm run build"]
+
+[phases.start]
+cmds = ["npm start"]
+
+[var]
+NODE_ENV = "production"
+
+[static]
+# Public directory for static assets (PWA files, images, etc.)
+guest = ".next/static"
+url_prefix = "/_next/static"
+
+[[static]]
+guest = "public"
+url_prefix = "/"
+
+# Health check configuration
+[healthcheck]
+path = "/api/health"
+interval = 30
+timeout = 10
+retries = 3
+
+# Environment variables that should be available at build time
+[build.env]
+NODE_ENV = "production"
+
+# Port configuration
+[service]
+internal_port = 3000
+protocol = "tcp"

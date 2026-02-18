@@ -4,6 +4,7 @@ A full-stack Next.js application for a trading-signals/subscription business. In
 
 ## 🚀 Quick Links
 
+- **[Railway Quick Start](./RAILWAY_SETUP.md)** ⭐ - Deploy to Railway with PostgreSQL in 5 minutes
 - **[Quick Start Guide](./QUICKSTART.md)** - Fast track to deployment
 - **[Deployment Guide](./DEPLOYMENT.md)** - Detailed deployment instructions
 - **[Admin Login after deployment**](#admin-login-credentials)
@@ -24,9 +25,10 @@ A full-stack Next.js application for a trading-signals/subscription business. In
 
 - **Frontend**: Next.js 16 (App Router), React 19, TypeScript, Tailwind CSS v4
 - **Backend**: Next.js Route Handlers
-- **Database**: Prisma v7 with SQLite/Turso (LibSQL) support
+- **Database**: Prisma v7 with PostgreSQL (Railway), Turso (LibSQL), or SQLite support
 - **Authentication**: NextAuth v4 with JWT sessions
 - **Payments**: Razorpay
+- **Deployment**: Railway, Vercel, or any Node.js hosting platform
 
 ## Getting Started Locally
 
@@ -128,14 +130,28 @@ After running the seed script:
 
 ## Deployment
 
+### ⭐ Deploy to Railway (Recommended)
+
+Railway provides PostgreSQL database, automatic scaling, and excellent developer experience.
+
+1. **[Railway Quick Start Guide](./RAILWAY_SETUP.md)** - Deploy in 5 minutes
+2. **[Railway Configuration Summary](./RAILWAY_CONFIG_SUMMARY.md)** - Complete configuration reference
+
+**Key Steps:**
+1. Push code to GitHub
+2. Create Railway project from your repo
+3. Add PostgreSQL database
+4. Set environment variables (`NEXTAUTH_URL`, `NEXTAUTH_SECRET`)
+5. Deploy automatically
+
 ### Deploy to Vercel
 
-The easiest way to deploy is using Vercel:
+Vercel deployment with Turso database:
 
 1. **[Quick Start Guide](./QUICKSTART.md)** - Step-by-step deployment instructions
 2. **[Deployment Guide](./DEPLOYMENT.md)** - Comprehensive deployment documentation
 
-### Key Deployment Steps
+**Key Deployment Steps**
 
 1. Set up a Turso database
 2. Generate NextAuth secret: `openssl rand -base64 32`
@@ -147,10 +163,13 @@ The easiest way to deploy is using Vercel:
 
 ## Database
 
-This project uses Prisma as the ORM with two database options:
+This project uses Prisma as the ORM with multiple database options:
 
 - **Development**: Local SQLite database (`dev.db`)
-- **Production**: Turso (LibSQL) cloud database
+- **Railway Production**: PostgreSQL (auto-provided by Railway)
+- **Vercel Production**: Turso (LibSQL) cloud database
+
+The application automatically detects the database type from the `DATABASE_URL` environment variable format.
 
 ### Database Seeding
 
@@ -219,10 +238,12 @@ Payments are processed through Razorpay:
 ## Support
 
 For deployment issues, see:
-- [Deployment Guide](./DEPLOYMENT.md)
-- [Quick Start Guide](./QUICKSTART.md)
-- Check Vercel deployment logs
-- Review Turso database status
+- **[Railway Setup Guide](./RAILWAY_SETUP.md)** - Railway deployment quick start
+- **[Railway Deployment Guide](./RAILWAY_DEPLOYMENT.md)** - Detailed Railway documentation
+- **[Deployment Guide](./DEPLOYMENT.md)** - General deployment documentation
+- **[Quick Start Guide](./QUICKSTART.md)** - Quick start instructions
+- Check deployment logs (Railway/Vercel dashboard)
+- Review database status (Railway PostgreSQL or Turso)
 
 ## License
 

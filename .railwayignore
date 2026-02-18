@@ -1,0 +1,87 @@
+# Files to exclude from Railway deployment
+# This reduces build time and deployment size
+
+# Development files
+*.md
+!.md
+!.railwayignore
+.git/
+.github/
+.gitignore
+
+# Testing
+coverage/
+*.test.ts
+*.test.tsx
+*.spec.ts
+*.spec.tsx
+__tests__/
+test/
+
+# Development database
+*.db
+*.db-journal
+dev.db
+
+# Uploads (not needed in production build)
+uploads/
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.pdf
+!public/**/*.png
+!public/**/*.jpg
+!public/**/*.jpeg
+!public/**/*.svg
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Temporary files
+*.tmp
+temp/
+tmp/
+*.bak
+
+# Build artifacts from local builds
+build_output.txt
+build.log
+seed_err.txt
+seed_output.txt
+prisma_seed_error.txt
+
+# Environment files (Railway uses its own environment)
+.env.local
+.env.development
+.env.*.local
+
+# Playwright
+.playwright-cli/
+playwright-report/
+test-results/
+
+# Scripts that aren't needed in production
+check-user.ts
+test-*.ts
+
+# Documentation (keep essential ones)
+*.md
+!README.md
+!RAILWAY_SETUP.md
+!RAILWAY_DEPLOYMENT.md

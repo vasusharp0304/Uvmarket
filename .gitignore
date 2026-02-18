@@ -56,3 +56,11 @@ build.log
 # uploads
 /uploads/*
 !/uploads/.gitkeep
+
+# railway
+.railway/
+
+# temporary files
+*.tmp
+temp/
+tmp/

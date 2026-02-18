@@ -1,6 +1,8 @@
 import { PrismaClient } from '@prisma/client';
 import { PrismaBetterSqlite3 } from '@prisma/adapter-better-sqlite3';
 import { PrismaLibSql } from '@prisma/adapter-libsql';
+import { PrismaPg } from '@prisma/adapter-pg';
+import { Pool } from 'pg';
 import path from 'path';
 
 const globalForPrisma = globalThis as unknown as {
@@ -8,7 +10,25 @@ const globalForPrisma = globalThis as unknown as {
 };
 
 const prismaClientSingleton = () => {
-    // Check for Turso/LibSQL env vars (Production)
+    // Check for PostgreSQL env vars (Railway Production)
+    const databaseUrl = process.env.DATABASE_URL;
+    
+    if (databaseUrl && databaseUrl.startsWith('postgres://')) {
+        console.log('[PRISMA] Initializing Prisma Client with PostgreSQL adapter...');
+        console.log(`[PRISMA] Database URL: ${databaseUrl.replace(/:([^:@]+)@/, ':****@')}`); // Hide password
+        
+        const pool = new Pool({ connectionString: databaseUrl });
+        const adapter = new PrismaPg(pool);
+        
+        return new PrismaClient({ 
+            adapter,
+            log: process.env.NODE_ENV === 'development' 
+                ? ['query', 'error', 'warn'] 
+                : ['error'],
+        });
+    }
+
+    // Check for Turso/LibSQL env vars (Alternative Production)
     const tursoUrl = process.env.TURSO_DATABASE_URL;
     const tursoAuthToken = process.env.TURSO_AUTH_TOKEN;
 

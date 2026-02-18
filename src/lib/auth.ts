@@ -100,6 +100,10 @@ export const authOptions: NextAuthOptions = {
         },
     },
     secret: process.env.NEXTAUTH_SECRET,
+    
+    // Trust the host header (required for Railway/reverse proxy deployments)
+    trustHost: true,
+    
     // Enable debug mode in development
     debug: process.env.NODE_ENV === 'development',
 };

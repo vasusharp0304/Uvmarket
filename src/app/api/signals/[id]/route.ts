@@ -61,7 +61,22 @@ export async function PUT(
             returnPercent = Math.round(returnPercent * 100) / 100;
         }
 
-        const updateData: any = {};
+        const updateData: {
+            symbol?: string;
+            companyName?: string;
+            segment?: string;
+            signalType?: string;
+            direction?: string;
+            entryPrice?: number;
+            targetPrice?: number;
+            stopLossPrice?: number;
+            exitPrice?: number;
+            status?: string;
+            notes?: string;
+            isVisibleToCustomers?: boolean;
+            returnPercent?: number;
+            exitDateTime?: Date;
+        } = {};
         if (body.symbol !== undefined) updateData.symbol = body.symbol.toUpperCase();
         if (body.companyName !== undefined) updateData.companyName = body.companyName;
         if (body.segment !== undefined) updateData.segment = body.segment;

@@ -80,11 +80,30 @@ export const authOptions: NextAuthOptions = {
     },
     pages: {
         signIn: '/login',
+        error: '/login',
     },
     session: {
         strategy: 'jwt',
+        maxAge: 30 * 24 * 60 * 60, // 30 days
+    },
+    cookies: {
+        sessionToken: {
+            name: process.env.NODE_ENV === 'production' 
+                ? `__Secure-next-auth.session-token` 
+                : `next-auth.session-token`,
+            options: {
+                httpOnly: true,
+                sameSite: 'lax',
+                path: '/',
+                secure: process.env.NODE_ENV === 'production',
+            },
+        },
     },
     secret: process.env.NEXTAUTH_SECRET,
+    // Enable debug mode in development
+    debug: process.env.NODE_ENV === 'development',
+    // Trust the host header (important for Vercel and other serverless platforms)
+    trustHost: true,
 };
 
 // Helper function to get server-side session
